@@ -1,0 +1,125 @@
+GEN AI
+
+----------------------------------------------------------------
+1- Intro to GEN AI
+----------------------------------------------------------------
+1-What is Gen AI? Histroy
+2-GENAI impact AREAS:
+	- Customer Support
+	- Content Creation
+	- Education
+	- SOftware Devlopment
+3- Is GEN AI successful? Compare Internet and coptro
+	- Does it solve real world Problems? Yes
+	- Is it useful on a daily basis? Yes
+	- Is it impacting the world economics?Yes
+	- Is it creating new jobs? Yes
+	- is it accessible and easy to use? Yes
+4- The problem when studying GEN AI?
+	- very fast progress
+	-  The noice/ FOMO around GEN AI
+	- No single source to learn
+5- Solution to solve all the above problem => that is making a mental model
+   - is there is a term/tools which become center of the GEN AI answer is yes? that is **Foundation Models**
+	-----------------------------------------------------------------
+		Foundation Models
+	-----------------------------------------------------------------
+-isko train karne ke liye bhut data chahiye aur bhut hardware chahiye, takes millions of dollars to train
+- Unlike other ML models, these are generalize model and they are not specialized model. means in ML, models are tasks specific, if make a model to predict the stock proice then it will only do that and unable to predict the cricket score.
+- but foundation models are generalized models,means they can do more than one thing/taks this happens because the models architecture is very big, they have a lot of paramerts and secondly you are giving them lot of data, basically you are teaching a intellitent person a lot of books then that person can solve problems in more than one domain.
+-Example of Foundation models are LLMs which is backbone of GEN AI => you can solve muliple problem with LLM like sentaminal anaylsis,text gen,summarization, all because you traine a very large model
+- LLMS => model which can work with image,voice etc.
+
+So now one good thing is happen the mental model is created in it's center there is fundation model and acoording to my knowledge i feel we can divide the while GEN AI into 2 parts:
+ 	- either you use the foundation models (User Perspective)
+	- or you can build the foundation models (Builder Perspective)
+
+
+		-----------------------------------------
+		          Now the game begin
+		-----------------------------------------
+- From now on when ever i found a term, i say to myself if the term beleong to the builder side or the user side
+- 			Terms
+		               --------------
+-- Prompt Enginnering: Defination (User perspective)
+-- RLHF: Defination (Builder)
+-- RAG: Defination(apen private data ke upar qusetion answers) (User)
+-- Pretraining (Builder)
+-- Quantization:(it is a process where you are able to optimzae a model, with the help of which  you can try it in differernt environments) (Builder)
+-- AI Agents (User)
+-- Vector Databases (User)
+-- Fine Tuning (User and Builder both)
+
+
+--------------------------------------------------------------------------
+		Builder's Perspective
+--------------------------------------------------------------------------
+Prerequizetes: 1-ML fundamentals 2- DL fundamentls 3- DL framework idea like tensorflow/Pytorch
+
+		Curriculum
+	---------------------------------------------
+1- Transformer Architecture(should study in deep) => encoders, decoders, embeddings, self-attention. layer normalization, language modelling
+
+2- Types of Transformer:
+	- Encoders Only(BERT)
+	- Decoders Only(GPT)
+	- Encoder and Decoder based(T5)
+
+3- PreTraining:
+	- Training objective
+	- Tokenization Strategies
+	- Trainig Strategies
+	- Handling challenges
+	- Evalutation
+
+4- Optimization:
+	- Training Optimization
+	- Model compression (Qunatization)
+	- Optimizing Inference
+
+5- Fine Tuning:
+	- Task specific tuning => RLHF
+	- Intruction tuning => PEFT
+	- Continual Pretraining
+6- Evalution
+7- Deployment
+
+Now we know what things are done in the process of making a foundation model.Now let's discuss what all things are required in the process of using a readymade foundation model.
+
+	-----------------------------------------------------	
+		User's Perspective
+	------------------------------------------------------
+1- Building Basic LLM Apps: 
+	- Open Source vs Closed Source LLMs
+	- Using LLM APIs
+	- LangChain
+	- HuggingFace
+	- Ollama
+
+Here we learn to make basic apps using LLM. Here first learn different type of LLMs or Foundation model are available, if they are open source or close source if close source then used them with APIS
+
+2- Now when you have done all these then a important stage comes where you learn to improve the response you get from the LLMs. Here three techniques comes:
+	- Promt Enginnering(defination)
+	- RAG (defination)
+	- Fine Tuning(defination and differnce from builder side fine tuning)
+
+3- Agents: A new filed of study, So you mostly use LLM applications to build the chatbots etc but with the help of agents you can create such chat bots that not only talk to you but also do some work for you, 
+like you are taliking to find out what are the nest tourist destinations in India? that chatbots give you some answer lets's says GOA and then you ask him to book a hostel in GOA AI agentic will do that for you
+
+Basically here you the providing the LLM some tools so he can access these tools so ge some work done
+
+4- LLMOps => The model you build you need to deploy (defination you give chatgpt in detail)
+
+5- Miscellaneous=> Multimodels(voice and text), stable diffusion
+
+------------------------------------------------------------------------------------
+Do we need to learn both?
+
+	-Builder side => Data Scientist (Research Scientist)
+	-User side => Software Developer
+	-Intersection of both Builder and User => AI Enginner
+
+AI enginner ek aisa enginner hai jisse ek foundational model dee diya gya hai and on top of that LLM he is making an application but this guy's specailly is that he know a lot about builder side also, he also knows how to make a foundation model this knowdelge is important because if you have this knowdlege then you will able to operate better in user side.
+
+
+
