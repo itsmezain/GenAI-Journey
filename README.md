@@ -31,7 +31,8 @@ Generative AI can be approached from two perspectives:
 🚀 **Fine-Tuning**: RLHF, PEFT, Continual Pretraining  
 🚀 **Deployment & Model Serving**  
 
-<img src = "Image/Builder Perspective.png"/> 
+<img src = "Image/Builder Perspective.png"/>  
+
 ---
 
 ### **2️⃣ User's Perspective (Using LLMs to Build Apps)**  
