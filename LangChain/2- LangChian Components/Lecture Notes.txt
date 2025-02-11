@@ -1,0 +1,382 @@
+Hey guys, my name is Nitish and welcome to my channel! You’re gonna get two main benefits from this. First, you’ll get a really deep dive into how LangChain is organized as a framework. You’ll understand the thought process of the people who built this library. The second benefit is that moving forward, all the videos I’ll be putting in this playlist will be based on this video. That means the components I discuss today will be the focus of the detailed videos you’ll see in the future. So, after watching this video, you’ll have a kind of roadmap.
+
+You'll get a map of what we're going to cover in this playlist. Before we dive into the video, I want to give a quick disclaimer: in today's video, we're not going to be coding or building any projects. The reason for that is pretty simple. When I started this playlist, I mentioned that I've noticed people tend to jump straight into projects without laying a solid foundation in language learning, and I don't think that's the right approach.
+
+I think the right way to learn this library is to first get a conceptual overview of it, and then start coding. So, in this playlist, I've planned the same thing. In the first two videos—last week's and today's—I’ll walk you through some theory and we'll build projects. That's why in this video, I’ve decided not to include any actual coding, but that doesn’t mean it’ll be boring. I’ve made sure that while explaining any component, I keep it interesting and relevant for you.
+
+"Let me give you some industrial examples, and I bet you won't find this video boring. I think I've given you enough of an introduction about this video, so let’s get started. Before we jump in, I want to quickly recap the last video. The previous video was the first one in this playlist, and I tried to explain in detail what LangChain is and why it’s needed. I mentioned that LangChain is an open-source framework that helps you work with LLMs."
+
+You can create powered applications, and then we discussed why we needed LangChain. I gave you an example of wanting to build an application where anyone can interact with a PDF. I tried to explain through a system design how many components such a system would have and how there would be a lot of interactions between those components. If someone wanted to code this kind of system from scratch, it would take a lot of effort. Then I explained how LangChain fits into the picture.
+
+The biggest advantage of complaints is that LangChain can efficiently orchestrate all these components and build pipelines, giving you maximum output with minimal code. I also mentioned that LangChain has a concept of chains, where you can link different components together. The beauty of chains is that the output of one component automatically serves as the input for the next, so we don't have to code that manually.
+
+I told you how LangChain is a model-agnostic framework, which means that if tomorrow you want to use Google’s models instead of OpenAI’s GPT models, you won’t need to change much code—literally just a line or two. I went over all these benefits in the last video. I also mentioned what people are currently using LangChain for. I gave examples of a lot of folks building conversational chatbots.
+
+A lot of people are creating AI knowledge assistants for their companies, and many companies have already jumped on the bandwagon to make agents. We covered all of this in the last video, and I really hope you’ve seen it. If you haven’t, I’d recommend going back and checking it out because it’ll help you understand today’s video better. So that was the recap. Now let’s move on to today’s topic, which is about the components of language change.
+-------------------------------------------------------
+Alright, first off, I’d like to show you this diagram because I've listed all the components here. 
+
+-So, in total, there are six different components in the language chain, and if you go through these six components, trust me, you'll get the majority of the concepts behind the language chain. So, the first component is models, the second is prompts, the third is chains, the fourth is memory, the fifth is indexes, and the sixth is agents. In this video, our goal is to go through each of these components one by one.
+
+We'll discuss this in detail, and you'll notice that throughout this playlist, we're going to talk about these six components.
+--------------------------------------------------------------
+- Alright, let's start with our first component, which is models. So, guys, we're going to dive deep into the models component because it's the most important part of LangChain. Here it says that LangChain models are the core interface through which you interact with AI models. 
+
+Let me give you some background on NLP. There's this one application that everyone has been dying to create, and that's chatbots. They're probably the most popular application in the NLP world, and everybody wants to build their own chatbot.
+
+-But there were two major problems with creating chatbots, although they're not really issues anymore. The first problem was understanding user queries. For example, if I type "Hi, can you check my email now?", the challenge was getting the chatbot to understand what I meant. That was the first big hurdle in building a chatbot, and we call this NLU (Natural Language Understanding).
+
+-They're talking about the challenges of natural language understanding. The second challenge is that even if a chatbot understands what I'm asking, replying accurately is a big hurdle too. Basically, generating context-aware text is a significant challenge, and a lot of effort has gone into solving both of these issues. 
+
+-Eventually, large language models (LLMs) came along and tackled both problems together. To train these LLMs, we used almost all the data available on the internet, which is why... not only the LLMs have the ability for context-aware text generation. What I mean is that after the advent of LLMs, two major problems in NLP were solved together. 
+
+-That’s great, but a new problem came up. The new issue is that since LLMs are trained on data from the entire internet, they have a ton of parameters—like billions of them—which makes the size of LLMs huge, like really huge."
+
+- A lot of the good large language models out there are bigger than 100GB. The problem is, no regular person can run these huge files on their computer, and even small companies can't manage them on their servers because the cloud costs would be sky-high. 
+-So, that’s the second big challenge that came up with the rise of LLMs. But this challenge has been tackled with the help of APIs. Big companies like OpenAI have created APIs, so now anyone around the world can access them.
+
+- You can send your query, and the API will communicate with the LLM. The LLM will send back its response, and you'll receive that response. The benefit of this model is that I don’t need to run the LLM on my computer or cloud services. I’ll just send as many questions as I need to the API, and I’ll only pay for what I use, which solves that problem. 
+
+
+- 3 ==> But now there’s a third issue that comes up, and that’s about implementation. Different LLM providers have written their APIs in different ways, 
+
+- which means, If I'm an application developer and I need to communicate with two different LLM APIs in my app, I'll have to write different types of code for each. Let me show you what I mean. Here, I have two pieces of code. The first one is for OpenAI. If I want to communicate with their GPT model through their API, this is the code I'd use.
+
+- Create a human-like response to a prompt
+from openai import OpenAI
+client = OpenAI()
+completion client.chat.completions.create(
+model="gpt-40-mini",
+messages=
+{"role": "system", "content": "You are a helpful assistant."},
+{
+  "role": "user",
+"content": "Write a haiku about recursion in programming."
+}
+ print(completion.choices[0].message)
+
+ - The second piece is for Anthropic's Claude. If I need to talk to Claude, this is the code for that API. You can already see there are some differences."
+ - code ==>
+	claude_quickstart.py
+	------------------------
+import anthropic
+client = anthropic. Anthropic()
+message = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1000,
+    temperature=8,
+    system="You are a world-class poet. Respond only     with short poems.",
+    messages=[
+	{
+	"role": "user",
+	"content":[
+	"type":"text",
+	{
+	"text": "Why is the ocean salty?"
+      	}
+print(message.content)
+
+
+
+- So if I want to use both LLMs in the same app for different purposes, I have to write two separate types of code. 
+
+- Or let's say I built an app with OpenAI’s help, and I wrote this code. Suddenly, I don’t want to use OpenAI’s API anymore because it's too expensive, and I need to switch to Claude's API. Now I have to change my entire codebase to make that work, which is a lot of effort. Basically, standardization becomes a challenge since each API has its own different working.
+
+The OpenAI API and the other APIs are acting differently. Even the responses I'm getting are of different types. 
+
+==> So, LangChain has identified this problem where anyone can interact with any company's API in a standardized way. This means you won’t have to make many changes in your code, and you can easily communicate with OpenAI. With just a little tweak in the code, you can also talk to Gemini. That’s what the model component of LangChain is all about.
+
+- "This is basically an interface that helps you communicate with any company's AI model. In fact, let me show you some code. Look down here; these are both pieces of code from LangChain. In the first code, we're talking to OpenAI's API:
+
+from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+load_dotenv()
+model = ChatOpenAI (model='gpt-4', temperature=0)
+result = model.invoke("Now divide the result by 1.5")
+print(result.content)
+
+
+ and in the second one: 
+
+from langchain_anthropic import ChatAnthropic
+from dotenv import load_dotenv
+load_dotenv()
+model = ChatAnthropic (model='claude-3-opus-20240229')
+result = model.invoke("Hi who are you")
+print(result.content)
+
+we're talking to Claude. Now you can see for yourself how different the code is. Here, you’re just calling different packages, but the way you make the calls is exactly the same. The way you print the results is also exactly the same. You can literally..."
+
+Just change one line, actually just two lines—this line and that line—and you’re all set. You can switch over from OpenAI to Clutch right away. 
+
+-The answers you get will be pretty similar too, so parsing them will be really similar. 
+
+- In short, the component of these models standardizes the whole interface for interacting with AI models. Got it? I hope you understand what the models component is now. One more thing I’ll discuss here is in LangChain; you have two types of models, two types of AI models.
+---------------------------------------------------------------
+You can communicate with both, the first one is a language model and the second one is an embedding model. 
+
+- Let me quickly explain these two. So, language models are basically LLMs where you input text like "How are you today?" and they respond with text output like "I'm good, how about you?" So, LLMs are basically language models that work on a text-in, text-out philosophy. With their help, you can create all sorts of applications, like chatbots and AI agents.
+
+- Embedding models are a bit different; they take text as input and give you a vector as output. We discussed this in the last video, and their main use case is semantic similarity, which I also mentioned back then. 
+
+- So, LangChain can communicate with both types of models—language models and embedding models. In fact, let me show you which ones.
+
+- You can find all the language models available in LangChain, along with various embedding models. If you check the documentation for LangChain, go to the section for chat models, and you'll see a list of all the providers you can communicate with using LangChain. Some of the names you’ll find include Chat Anthropic, Chat Mistral AI, Chat Azure, Chat OpenAI, Chat Vertex AI, Chat Bedrock (which is from AWS), and Chat Hugging Face. There are plenty of options to explore!
+link : https://python.langchain.com/docs/integrations/chat/
+
+"Hey, you've probably heard about all the features available in those language models, right? Like, does it have a tool calling feature? That’s useful when you’re creating an agent. You also want to know if you get structured output, like in JSON format. Can you run that model locally on your machine? Can it handle multi-modal input? All this information is laid out here, so definitely take some time to check out the list of which language models are available."
+
+
+link : https://python.langchain.com/docs/integrations/text_embedding/
+
+- This page shows you what embedding models are available in LangChain. You'll find a bunch of well-known names like OpenAI, Mistal AI, and IBM's embedding models. There's also Llama. I’d recommend checking out this page and reading through it a bit; it’ll help broaden your perspective. In a nutshell, the model component is basically an interface that lets you communicate with AI models, and it solves a major problem with that interface.
+
+The component here is that while different APIs and LLMs were doing their own thing, this particular component standardizes everything. So, with just a little code change, you can connect with any LLM provider. That’s the whole idea behind this component model.
+
+--------------------------------------------------------------
+-------------------------------------------------------------
+		Prompts
+	---------------------------------------
+
+-The second component of language generation is prompts. So, what are prompts? When you’re working with an LLM, the input you send to it is called a prompt. Basically, prompts are just inputs to LLM.
+
+- If you're working with a model like GPT-4 and you ask ChatGPT a question like "What is campus X?", that phrase "What is campus X?" is what you can call a prompt. Prompts are super important in the world of LLMs because the output from the LLM really depends on them. In fact, it's quite sensitive—meaning if you tweak the prompts just a little, the output from the LLM can change a lot. 
+
+- For example, let's say you ask an LLM to "explain linear regression in academic tone" and then ask the same LLM to explain linear regression in a fun tone, you'll notice that you only changed one word, but the output from your LLM will be really different. So, prompts are super important! 
+
+-In fact, over the last two years, a whole field of study has emerged around prompts, and you’ll see a lot of jobs popping up in this area. It’s called prompt engineering, and the job title is prompt engineer, although it's gotten a bit of a bad reputation on social media lately.
+
+- "But trust me, this is an important field of study around LLMs. LangChain helps in creating these LLM powered application, and it really relies on LLM prompts. So, we need a solid component to handle prompts, and they developed a component for that.
+
+- LangChain gives you a lot of flexibility to create prompts. In fact, you can create a wide variety of powerful types of prompts in LangChain. Let me give you some examples.
+
+- For instance, let's look at the first example here."
+
+	i) You can create really powerful, dynamic, and engaging prompts with the help of LangChain. It's like I don't even know what topic the user is going to ask me about or what tone they want me to use. So what I can do is create a dynamic prompt where I say, "Summarize this topic in this tone." I just put in a few placeholders here, like I haven't mentioned the topic yet or the emotion. Now, what I'll do is ask the user, and they'll tell me, "I want to talk about cricket."
+
+Tell me about it. So now, what I can do is quickly replace this placeholder with "cricket" and this other placeholder with "fun." And now, I’ll send this prompt to my LLM. Similarly, tomorrow another user might come along and use the same prompt for, let’s say, "biology" in a serious tone. This is how you can create dynamic and reusable prompts in LangChain. 
+
+Code => 
+from langchain_core.prompts import PromptTemplate
+prompt = PromptTemplate.from_template('Summarize {topic} in {emotion} tone')
+print(prompt.format(topic='Cricket', length='fun'))
+
+
+
+	ii)Also, if you want, you can create role-based prompts as well. So, what you can do is first create a system-level prompt where you put some Just write a message like this: 'Hey, you're an experienced professional, and you've set up a placeholder for the profession that will be provided later by the user.' Then, you created a user-level prompt where the user says, 'Tell me about this topic.' 
+
+- In the future, a user might come in and say, 'You're an experienced doctor,' so that will fill in here, and the topic will be viral fever. That way, you're guiding your LLM to act like an experienced doctor and talk to me about viral fever."
+
+"Talk about fever. Similarly, tomorrow another user might come and say, 'Hey, you're an experienced engineer. Tell me about developing bridges; I don’t know anything about that.' So you can also create role-based prompts using language models. 
+
+Code ==> 
+# Define the Chat Prompt Template using from_template
+
+chat_prompt = Chat PromptTemplate.from_template([
+("system", "Hi you are a experienced {profession}"),
+("user", "Tell me about {topic}"),
+])
+
+# Format the prompt with the variable
+formatted_messages = chat_prompt.format_messages (profession= "Doctor", topic="Viral Fever")
+
+		
+
+		iii)You can do free shot or few shot prompts using language models. So what are few shot prompts? It’s when you show your language model a few examples first and then ask it a question.
+
+- For instance, if you're building a chatbot for customer support, what would you do first?" You'll show your LLM some examples of previous messages and explain what type of message it is.
+
+- Like, if it says 'I was charged twice for my subscription this month,' that's a billing issue. I've already informed the LLM about that. 
+
+- Then I gave another example: 'The app crashes every time I try to log in,' which is a technical issue. 
+
+- 'Can you explain how to upgrade my plan?' is a general inquiry. So, I've provided these examples and explained what your output should be.
+
+-  Now, what I'm doing is..." "I'm creating a template where I'll ask questions to the LLM in this format. This will be my input, and my query will be about the output category. Okay? Now, what I'm going to do is make a short prompt template where I'll give all my examples. I'll provide my example prompt and my example template. Then, I'll send a new query and ask, based on the previous examples you've seen, which category this new example falls into. So, what's next?"
+
+Let’s categorize the following customer support tickets into one of these categories: billing issue, technical problem, or general inquiry. Here’s my example one, example two, example three, example four, and here’s my final query that my user asked me at this point. Now, the category will be printed out by my LLM. So, this is a great little prompt template that you can easily create using LangChain. 
+
+
+If you’re finding this a bit difficult.. 
+It seems like this whole code is a bit confusing because, obviously, you haven't read all this stuff. But don't worry, I just wanted to show you the concept of how many different types of prompting techniques you can implement in LangChain using the prompts component. It's a really important component, and in the future, we'll do a couple of dedicated videos on it. 
+
+
+Code ==>
+examples = [
+{"input": "I was charged twice for my subscription this month.", "output": "Billing Issue"},
+{"input": "The app crashes every time I try to log in.", "output": "Technical Problem"},
+{"input": "Can you explain how to upgrade my plan?", "output": "General Inquiry"},
+{"input": "I need a refund for a payment I didn't authorize.", "output": "Billing Issue"},
+# Step 2: Create an example template
+example_template =
+Ticket: {input}
+Category: {output}
+# Step 3: Build the few-shot prompt template
+few_shot_prompt = FewShot PromptTemplate(
+examples examples,
+example_prompt-PromptTemplate(input_variables=["input", "output"], template-example_template),
+prefix="Classify the following customer support tickets into one of the categories: 'Billing
+Issue', 'Technical Problem', or 'General Inquiry'. \n\n",
+suffix="\nTicket: {user_input}\nCategory:",
+input_variables=["user_input"],
+Classify the following customer support tickets into one of the categories: 'Billing Issue', 'Technical Problem', or 'General
+Inquiry'.
+Ticket: I was charged twice for my subscription this month.
+Category: Billing Issue
+
+Ticket: The app crashes every time I try to log in.
+Category: Technical Problem
+Ticket: Can you explain how to upgrade my plan?
+Category: General Inquiry
+Ticket: I need a refund for a payment I didn't authorize.
+Category: Billing Issue
+Ticket: I am unable to connect to the internet using your service.
+Category:
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+		Chains
+	**--------------------------**
+- The next component in LangChain is called chains, and it's such an important part that the whole LangChain is named after it.
+
+- So basically, Chains is a component that helps us build pipelines in LangChain. The idea is that you can create any LLM application and shape it into a pipeline,. And you can create that pipeline with the help of Chains. 
+
+-Let me explain with an example. Let's say you want to build an LLM application where the user provides a large English text, around 1000 words, and your job is to give a summary of it in Hindi, in less than 100 words. That's the LLM.
+
+- So, you need to create an application, right? You’ve decided that the flow of this entire LLM application will be like this: first, you’ll get some input. You’ll send that input to an LLM, and its job will be to translate it into Hindi. So, that’s where the translation happens. After that, we’ll send the translated text to a second LLM, which will generate a summary in Hindi, keeping it under 100 words. That’s the flow you’ve decided for the LLM application. 
+
+
+- Now, what can you do next? You can think of this flow as a pipeline. Now, if you’re not going to use chains, you’ll have to design the whole pipeline manually. This means you’ll get input from the user, then call this LLM with that input. You’ll tell it to translate it into Hindi, and you’ll get the Hindi translation. After that, you’ll take that translation to another LLM and ask it to generate a summary of the Hindi translation. Then you’ll get your final output.
+
+So, if you were to design this entire pipeline manually, you'd have to take the output from every stage and manually input it into the next stage. Chains solve this problem. The coolest thing about chains is that they automatically take the output from one stage and use it as the input for the next stage, so you don’t have to write any code yourself. This means that if you set up the whole task with the help of a chain, you just need to provide an English text here and call the chain, and behind the scenes, it handles the entire task.
+
+- "It will execute automatically, and you'll get your result right here. You don’t have to stress about feeding the output from LLM 1 into LLM 2; all that heavy lifting is happening behind the scenes.
+
+- To put it simply, the chain is this concept that helps you create a pipeline in LangChain. The best part about this pipeline is that the output from the previous stage automatically becomes the input for the next stage. You don’t have to write any manual code for that.
+
+- The good thing is that the chain I just showed you is a simple sequential chain where one stage follows another. But you can create a lot more complex pipeline using chains. 
+
+- Let me give you some examples. For instance, you can create a pipeline, which is a parallel chain. So, what this means is, let’s say you want to build an application where a user provides some input, and you need to generate a detailed report based on that input and give it back to the user.
+
+-Let's say the user types "911 incident." Your output will be a detailed report, right? Now, what do you want to implement? You want to combine the outputs of multiple LLMs. So, your flow will look something like this: you'll get the input, send it to LLM 1, and that LLM 1 will generate a report on that topic. Then, you'll also send the same input to LLM 2 simulationaly , and it will generate another report. 
+
+After that, you’re sending it to a third LLM 3 as well, so you're telling LLM 3 to combine those two reports, and then you're showing the combined result to the user. This is an example of parallel execution, where you're running things at the same time. You can easily execute the whole flow with the help of parallel chains. 
+
+- Alright, let me give you another example. There's another example of conditional chains where you can do different types of processing based on a condition. 
+- Like, let's say you’re building an AI agent that receives feedback from the user. So you’re asking the user. How did you find our service? The user is letting you know how they felt about the service. If the feedback is good, you're just saying thank you and moving on. But if the feedback is bad, you're quickly shooting an email to your customer support team.
+
+- Now, this is also an application you can easily build, and the processing happening here is based on certain conditions, which can be implemented pretty easily with the help of chains.  And there’s more like this.
+
+There are so many beautifully designed components of the language chain that really minimize a lot of your hard work. We'll dive into the chains in a bit more detail later. 
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+4-		Indexes
+	------------------------------
+
+The next component of the language chain is indexes, and honestly, reading about indexes should feel pretty straightforward since I explained this topic in detail in the previous video. 
+
+ ==> Indexes connect your application to external knowledge - subch as PDF, websites or databases. So, what exactly are indexes?
+
+- Before we dive in, let me explain what’s included in indexes. There are four main components: first, we have the document loader; second, the text splitter; third, the vector store; and fourth, the retrievers.
+
+- These four elements come together to create indexes. Now, let’s have a detailed discussion about what indexes are and why they’re important. 
+
+==>You use ChatGPT for all your queries, And it usually gives you answers for most of your questions because it has access to a lot of information. bcz it's trained on internet data, then it knows most things, but there are certain scenarios where ChatGPT won't be able to answer you. 
+
+- For example, if I work at a company called XYZ and I go to ChatGPT and ask, "Can you tell me what the leave policy is for my company XYZ?" or "What's the notice period policy at my company XYZ?" do you think ChatGPT can answer those questions? The answer is no, because those questions are about my company's private data.
+
+- ChatGPT can't answer this because it hasn't seen this data during its training. We all face the problem that we can’t ask ChatGPT questions related to our private and professional lives since it obviously doesn’t know about them. So, is there a solution? The answer is yes! 
+
+-What you can do is connect your LLM to an external knowledge source.
+
+- For example, I can take an LLM and link it to my Company complete rules book for XYZ Company. Now, if I ask a basic question like "Who is the Prime Minister of India?", the AI can definitely answer that because it's been trained on that information. But if I ask something like "What is the leave policy of XYZ Company?", it can still give me an answer because it has access to that external knowledge source. So, to build applications like this, we use indexes, and there are four main components for that.
+
+- Alright, so here's the deal: I've mentioned a system in my last video, and I’ll show you the same example again. Generally, here’s how you implement this kind of system. First off, you take your PDF—in our case, it’s the rule book for our company, which is pretty big, let’s say around 1000 pages because it’s a big company with lots of rules. So, the first thing you need to do is load that rule book from wherever it’s stored, like say, Google Drive, S3.
+
+- You bring in the data, and the job of loading it falls to the document loader. So, no matter where you get the data from, the document loader will help you.
+
+- Once you’ve got the data in, like the PDF, what you do next is to make the document searchable. To do that, you break the whole document down into smaller chunks based on pages, paragraphs, or chapters. For example, if we have 1000 pages, we create 1000 chunks. This chunking operation is handled by our second componet Text Spitter.
+
+- what we do next is convert our document into vectors so that we can perform semantic search. For each of our pages, we'll create embeddings using an embedding model that we discussed earlier. So now I have around 1,000 pages, which means I have 1,000 embedding vectors. 
+
+- Obviously, since I can search anytime—today, tomorrow, or even 10 days from now—I need to store these vectors somewhere. So, I store them in a database, and since we are storing these vector in a datebase, these special database called a Vector databases or Vectore strore, , which is our third component. 
+
+- Now, when a user queries, 'Hey, what's the leave policy for XYZ company?', a fourth component comes into play called the retriever. The retriever quickly grabs this query and generates its embedding with the help of an embedding model." 
+
+- The vector we get is used to perform a semantic search in this database, which gives us relevant results. Those relevant results, along with the user's query, are fed into the LLM, which then replies back to you. 
+
+==> This whole process is executed through indexes, and those indexes consist of four components that handle all the heavy lifting. 
+
+- So, in simple terms, indexes are the way you can build LLM applications which has Access to external knowledge sources. Now, external knowledge sources can be anything—PDFs, websites, or even a company's database. It's all pretty flexible. 
+
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+5-		Memory
+	----------------------------------
+The next component is memory. From the name, you might be getting a hint, but let’s discuss it in a bit more detail.  “LLM API calls are stateless, and it is a big statement and  it’s a big problem to.” 
+
+-When you’re building LLM-based applications, you’ll realize that when you make API calls in LLM, all those calls are stateless. What does that mean?
+
+- Let me explain through an example. Let's say I'm using an LLM API, like OpenAI's API, and I'm interacting with the GPT model. I asked the model, "Who is Narendra Modi?" and it quickly replied, "Narendra Modi is an Indian politician who is the current Prime Minister of India." Now, what I did was go into my code, change my query, and wrote, "How old is he?" which means I'm asking about his age.
+
+- I'm asking, now I've hit the same thing on the API, and guess what? This is the result I'm getting: it's saying, as an AI, I don't have access to personal data about individuals unless it has been shared with me. 
+- This means it doesn't even remember the last question that was asked about Narendra Modi, so it can't decode the "He" in the sentence at all. 
+
+-Now, I hope you get the meaning of this sentence and understand that each request is independent when you call an API, meaning it doesn't consider any previous requests means it has no memory.
+
+- that's a big problem. Just think about it—if you build a chatbot with a system like this, talking to it would be so frustrating because it wouldn't remember any part of the conversation. You'd have to keep reminding it what you were talking about, and that's a huge issue when you're developing LLM applications. That's where LangChain comes in with a component called Memory. 
+
+-With memory, you can add a memory feature to your entire conversation. It's a bit of an advanced topic, but Still, let me tell you a bit about 
+
+- the different types of memories available in LangChain. There are many kinds, but the one that's used the most often is the conversation buffer memory. So, what happens here is that when you're chatting with your bot, it keeps track of all the conversations you've had so far. Then, when you make the next API call, you send that entire chat history to the model, which helps it understand what you're talking about. 
+
+- The only issue is that if your If the chat gets too long, what will happen is that the chat history will also get huge, and processing all that text will cost you a lot of money. So, think of it as a type of memory. 
+
+- The second one is a conversation buffer window memory, where you store your last n interactions. For example, you might say to keep the last 100 messages, and it constantly updates. At any time, you have the last 100 interactions stored and can send them in the next API call. 
+
+-Then, the third type of memory is user-based memory, where you create a summary of your entire chat history so far? You send that summary in your API calls,. This way, we save some text and it costs us a bit less. 
+
+- Plus, there's another type of memory called custom memory, where you keep specialized bits of information for more advanced use cases, like user preferences and some facts and figures about them. You always keep this in memory, which makes it easier for you to chat later on.
+
+This is an interesting and honestly very practical topic. 
+
+------------------------------------------------------------------------------------------------------------------------------
+6-		Agents
+	----------------------------------
+Now, let’s talk about the last component of LangChain, which is agents. Agents are a component in LangChain that makes it super easy to create AI agents. If you think about the last six months, I’m pretty sure you’ve heard about AI agents somewhere at some point. Everyone is saying the same thing: AI agents are going to be the next big thing.
+
+"It could be true, but anyway, let’s try to break it down from scratch and fundamentally understand what AI agents are and how you can build them in LangChain. 
+
+-We've discussed multiple times that LLMs (Large Language Models) have two main features: the first is NLU (Natural Language Understanding) and the second is text generation. This means LLMs can understand language and generate accurate text in response. So, when LLMs came into the picture, the most obvious use case was creating chatbots, and people started making a ton of chatbots Using an LLM"
+
+==>  the most popular AI application today is ChatGPT, which is basically a chatbot, right? So gradually, people started thinking that if my chatbot can understand me well and reply, it can also handle some tasks. 
+
+-For example, imagine I'm chatting with a chatbot on a travel website, like Make My Trip. Let's say I ask that chatbot, "Can you tell me what the best travel destination in India is during the summer?" Since their chatbot is an LLM and since the LLM was trained on the entire internet, it had information that summer is the best time for hill stations. So it quickly replied that you can go to Shimla or Manali. 
+
+- Now, if this were an AI agent instead of a chatbot, I could get it to do some tasks for me. For example, I could ask it right away, "Can you tell me the cheapest flight from Delhi to Shimla on January 24?" And this AI agent would quickly hit an API and fetch the answer, saying something like, "Okay." This Indigo flight is the cheapest one on January 24th from Delhi to Shimla. 
+
+- Now, what I can do is take it a step further and ask, "Can you book the flight?" Since it has that capability, it can quickly go to the Make My Trip website and book our flight. And this is the main difference between a chatbot and an AI agent. 
+
+- It’s like an AI agent is a chatbot with superpowers. A chatbot can chat, but an AI agent can actually get things done for you. 
+
+==> Here’s how it works: an AI agent basically has two main features.
+   i) The chatbot doesn't have reasoning capabilities, but the AI agent does, 
+   ii) Plus it has access to various tools. For instance, it can hit an API to find out which flight is the cheapest. So, the AI agent can use different tools to get the job done. 
+
+- Let me explain how an AI agent works through an example. Imagine we have an AI agent that we created, and we gave it two tools. The first tool is A calculator means that anytime during a conversation, my AI agent can quickly use this tool to do any math calculations. I've also given it access to a weather API, so if it needs to check the weather conditions in any city around the world on any date, it can do that. I've set up these two tools for my AI agent. 
+
+-Now, a user comes in and starts chatting with my AI agent, asking, "Can you multiply the today temperature of Delhi with 3?" That's what the user asked.
+
+- "Can you multiply today's temperature by 3 in Delhi and give me the answer? Now, let's see how this AI agent handles the query. Since it has reasoning capabilities, it means it can figure out exactly what I need. Alright, so there are different techniques for reasoning, and there are many popular ones. One well-known technique is called 'chain of thought,' prompting where your AI agent breaks down your query step by step and tries to reason through it. 
+
+- AI agent takes this query "Can you multiply today's temperature in Delhi by three? So, he will break this query down step by step. He'll say, 'I need to find today's temperature in Delhi to multiply it by three.' That means he needs the current temperature in Delhi. As soon as he gets the temperature, he can multiply it by three. Alright, now his full focus will be on finding today's temperature in Delhi. He'll go and check if he has any tool that can tell him the temperature in Delhi, and he'll notice that yes, he does. He has a weather API, so he quickly hits the weather API and inputs "daily," and when the weather API responds, it says 25 degrees Celsius. 
+
+- Now, your agent will say, "Okay, I have the temperature for Delhi, and I need to multiply this number, 25 degrees Celsius, by three." But to do this operation, he needs a calculator. So, he goes back to check his tools to see if he has access to a calculator. The answer is yes, so he quickly calls up the calculator and inputs 25multiplication  by  3, and calculator give result is 75,  which ends up being your final output. That's how AI agents work. 
+
+- So basically, the difference between an AI agent and a chatbot is that an AI agent has reasoning abilities and access to tools. An AI agent is just a more advanced version of a chatbot where you can take actions with the help of AI agents because it has reasoning capabilities and tool access. I hope that makes sense; it's a really interesting topic!
+
+It seems like all the big companies and the top researchers in the AI world are converging on this topic, and I'm pretty sure we're going to see a lot of progress in this area over the next year or so. So, we'll be discussing this in detail. AI has made it really easy to create agents, and we'll show you how to build one. 
+------------------------------------------------------------------------------------------------------------------------------
+

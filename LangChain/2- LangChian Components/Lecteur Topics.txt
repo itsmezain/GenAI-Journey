@@ -1,0 +1,58 @@
+1-		LangChain Components
+		-----------------------------
+i) Models
+ii) Prompts
+iii) Chains
+iv) Memory
+v) Indexes
+vi) Agents
+
+---------------------------------------------------------------
+2- Models (detail defination, why we need LangChain, how LangChain standarize use api calling, with example)
+
+i) LangChain have 2 type of models:
+	a) language model
+	b) Embedding models
+---------------------------------------------------------------
+3- 		Prompts:
+Defination
+Type of prompts 
+improtaance
+Multiple differnet examples
+--------------------------------------------------------------
+4-		 Chains:
+Defination
+Example
+Types of chain each example with detail example:
+	i) PArrarel
+	ii)Sequenital
+	iii) Conditonal
+	iv) If any left then include that
+---------------------------------------------------------------
+5- 		Indexes
+	-----------------------------
+Defination
+Why indexes
+Indexes are mafe up of 4 things : Doc loader, Text spliter, vector store, Retrivers.
+What are Indexed and why we need them.
+------------------------------------------------------------
+6-		Memory
+	----------------------------------
+Defination
+Why we need memory 
+Use cases of memory
+Different types of memory:
+	i) ConversationBuffer Memory: Stores a 	transcript of recent messages. Great for
+	short chats but can grow large quickly.
+	ii) ConversationBufferWindowMemory: Only keeps the last N interactions to avoid
+excessive token usage.
+	iii) Summarizer-Based Memory: Periodically summarizes older chat segments to keep
+a condensed memory footprint.
+	iv)  Custom Memory: For advanced use cases, you can store specialized state (e.g.,
+the user's preferences or key facts about them) in a custom memory class.
+-------------------------------------------------------------
+7-		AI Agents
+	---------------------------------------
+i) Defination
+ii) AI Agents capabilities => reasoning and acces to tools
+iii) Examples
