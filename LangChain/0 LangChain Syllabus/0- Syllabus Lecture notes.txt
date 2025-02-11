@@ -1,0 +1,7 @@
+1- What is LangChain?
+2- Why LangChian first? => From all the user side things, LangChain is a good starting point bcz in the process of learning LangChian you can taste all the other things that are in the user side. Example: You can work with open source and closed source LLM, can use Hugging Face intergration and Ollama + Promt engineering, RAG and Fine also AI agents and LLMops you taste all these things when learning LangChain.
+
+3- We learn LangChain in 3 parts:
+	i)  Fundamental of LangChian
+	ii) RAG => Learn to make RAG Applications
+	ii) Agents =>Learn to make AI Agents Applications

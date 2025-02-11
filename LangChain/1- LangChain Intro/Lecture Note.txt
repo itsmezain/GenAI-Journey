@@ -1,0 +1,159 @@
+1- What is LangChain?
+Why do we need LangChain explain with the help of example? 
+
+Example => In the year 2014,  i had a startup idea, where i develop a pdf viewer where user can upload his book and can ask questions like.
+	Explain page number 5 as if i am a 5 year old.
+	Genrate short of the lesson 1.
+System Design of the app:
+User upload the pdf and then we upload that pdf to our database. Then user opened the pdf and then ask a query/ questions (eg: what are the assumpation of Linear Regression).
+So now we need to find out where in the entire book this topic has been taugh essentially we will have to perform a search operation but this search operation can be of 2 types:
+    i) Normal keyword search => In normal keyword search, you grab these words like assumption, linear regression and then search for these words in the entire book as it is.
+ Whenever assumpation word or Linear regression word is used, we will pick up all those pages and bring them.
+Now you can understand that this is a but inefficient. bcz we need contextual result about LR. but we are getting many more pages from the search.
+
+
+So what we are gonna do is instead of doing the keyword search we are gonna do the semantic search.
+
+    ii) Semantic search ==> In semantic search you try to understand the meaning of your query. 
+So now you try to understand that user need assumaption of LR, so now you will not go through the whole book and search for assumption, instead search for assumption of LR.
+
+Now, automatically you will get those pages in the result where assumpation of LR is discussed, so less number of pages will come but  you will get more meaningful results.
+-------------------------------------------------------------
+So, what we have done is we took the user query and perform the semantic search so imagine from this we got 2 page from the search (page no 69, 696 in these page assumption of LR is discussed)  so we got these results.
+
+So now what we are gonna do is from these 2 pages and user query we are gonna create a system query and this system query will go to our application most important component, for now we are gonna call it brain.
+
+So this Brain have only 2 purpose => i) fully understand the meaning of the query (NLU => Natural Language Understanding capability hone chaihiye hamare brain ke pass) which means agr hindi me pucha jaa rha too hindi me samaj lee english me pucha jaa rha english samaj lee but text ko ache se samaj jaaye.
+
+ii) Brain should have context aware  text generation capability, which means brain first undestand the user query and then genertate contet aware text from the pages.
+
+So will he do that is that. It will read these 2 pages and then extract the 5 assumpation of LR and generate text from them and give it to us and that is our finall output. 
+
+This  is how our entire system is working.
+
+
+--------------------------------------------------------------
+So now the question comes why this semantic search when we can look in the entire book and generate the context aware text but you think the problem yourself what is the problem.
+
+Promblem is very simple => imagine  you are studying in a school and you have a douby in your math book and you are going to your teacher and sir take this book and i have doubt in algebra. 
+This is scenario 1
+Scenario 2 is that you go to your teacher and tell them that i have a doubt in page number 155
+SOowhat you think where you will you get the best response. 100% in the 2nd scenario bcz you told him that i have a doubt in this page rather them giving him entire book.
+
+So same scene is here, you given your system brain only 2 pages instead of whole book and also gave a user's query and you told him look read the query and undestand it and find the answer from these two pages.
+
+Now if you haven the whoel book then it will become computationally more extensive and secondly, the result you get may not be that good that is why we  implement this semantic search so this is a high level overview of our Pdf viewer system.
+---------------------------------------------------------------
+	Detail Dive in the system
+	------------------------------
+So to better understand this system we have to understand the semantic search first. 
+
+Semantic search in (NLP) refers to the ability of a search system to understand the meaning or intent behind a query, rather than just matching keywords. Unlike traditional search, which relies on exact matches (such as keywords), semantic search aims to find results based on the context, synonyms, and overall meaning of the search input.
+
+
+How Semantic search exactly works?
+- Suppose you have 3 paragraph about Virat Kholi, Ali Zain and Rohit Sharma all are cricter and you will asked a question and you have to give answer to that question from these 3 paragraphs.  So you have find out in which paragraph the answer is hidden.
+
+- So how this  works? Suppose the question was asked how many runs has Virat scored? we know in Virat Kholi pragraph the answer is hidden. but how our code gonna uderstand it. SO in this what happend is that you first convert all your words into embedding. Converting into embedding means that you convert it into a vector. Vector mean a set of numbers.
+ 
+-So essientially you want to represent the semantic meaning of this entire paragraph in the form of numbers. So there are many techniques you can use like doc to vec, word to vec. Use Bard to generate embeddigs of words. There are many techniques, but the idea is you represent this entire paragraph in the form of multiple numbers.
+
+- For now let assume that the dimensions of these vectors is 100. BAsically this is a 100 dimensional vector(Chat gpt iska mtlb mare ko nhi samaj me aaya :( ) 
+
+- Now we have vertor of all these paragraph and as soon as this query comes to use => we will generate an embedding of it as well. We will convert it into the vector form basically. SO it's vector is also made of 100 dimensions.
+
+- So we have four vectors in 100 dimension space. These are the 3 vectors of your paragraph and imagine this is your query vector.
+So now what you are gonna do is find the simalarity  of your query vector with all 3 vectors. and from whichever similarity comes out be the strongest you will understand that this is the question related to that paragraph. and then you that most related paragraph to answe the question. SO this is how semantic search works.
+---------------------------------------------------------------
+This is the thing we have to implement in our system of PDF viewer.
+---------------------------------------------------------------
+ 	Extreme detail of this whole system
+	-------------------------------------------
+- So what will happen is this whole thing will start as soon as our user uploads a PDF.
+So after the PDF is uploaded we store it in the cloud somewhere. For now let assume that we are using AWS services so we are storing that PDF on AWS S3 service. Now we have reached our PDF on the cloud,  what we have to do now?
+
+- First of all, we have to load it. So basically we need a document loader, with the help of which we can bring the PDF into our system. Now that PDF come to our system, the first thing is have to do is that i have to divede this full PDF into small chunks. So small chunks on which bases? They can be of anything based on the chapter, based on the pages or even on the bases on paragraph.
+
+- Lets asusme we have a PDF of 1000 pages and we are doing chunks on the basis of pages. So in total, we have divided this PDf into 1000 parts.
+
+- So, we are basically using a text splitter with the help of which we can split each page.
+
+- Now, what we have to do is that we have to genarate the embedding of each page as i told you.
+
+- So, now we are using a embedding model, we are sending each page to this embedding model and the embedding model is geneating an embedding for that page. Embedding means generating a vector in an n-dimensinal space. So i have 1000 vectore, basically 1000 sets of numebers hia. 
+
+- Now what i will do is, i will store these embedding in a database  so that in the future I can query on these. These are different types of Databases.
+
+
+==> Now our main part starts :
+	 Our user came, he opened the PDf and asked a query, Now the query is a text. So what we will do is we send this query to the same embedding model and generate the embedding of that query again in the n-dimension.
+
+- Now what will happen that in our database we already have 1000 vectors now a new vector comes. We will compare that vector with all the other vectors, basically calculate the distance. Out of these vector or the set of vector that are closest to our query vectors, we will pick them up and bring them.
+
+- Basically, suppose we decided to return 5 vectors, then 5 most similar closet vectore will be returned. and corresponding to that,  we will extract the pages and we will get those page for your system query.
+
+==> After that entire flow ahead is exactly the same. We will take the user's original query and take these pages and combining them, we will form our system query and that system query go to our system brain and in the brain NLU and context aware text generation hoga from which we will get our answer.
+And that answer we display to user in the form of final output.
+
+==> So this is the low level detail. 
+---------------------------------------------------------------
+What are the challenges in building this project will come? 
+- 1 => Firstly, the most challenging aspect in this system is building this brain. Think we have to build/devlop a component that if we send any query to it, then our component should able to understand this query.This is a very challenging in itself.
+
+ After undetstanding it able to generate a relevant text, which is again a very challenging task.
+
+Honestly, a lot of work has been done in NLP on both of these things, But the real breakthrough happened in 2017 with the Transformer paper.After that, the BERT and GPT papers came out,and that's when the whole LLM saga kicked off. Finally, they cracked this problem. So guess what? We don’t have to put in too much effort to develop this brain; LLMs are already out there with both of these capabilities—natural language understanding and context aware text generatation.
+
+All we need to do is use a large language model (LLM). It was a big challenge back in 2015, but now it’s not such a big deal. You can easily solve this problem by using an LLM.
+
+-2==> Now, let me tell you about challenge number two. A big challenge is that if you want to use an LLM as your brain, you need to host it somewhere in your system, basically on your server. You might know that LLMs are pretty heavy models, really complex deep learning models trained on data from the entire internet, right?
+
+If you’re trying to run such a large LLM model on your own servers to get results, you’re going to have to do a lot of engineering work. You’ll face a ton of computational problems because it’s not easy to manage and run these big systems on your servers from an engineering perspective. Also, the costs are going to be really high. So, the second big challenge is figuring out how to bring an LLM onto my system or cloud, how to run it, and how to manage the costs. Got it?
+
+
+The good news is that this challenge has already been solved. Big companies like OpenAI and Anthropic have put their chat models, like ChatGPT, on their own servers and created an API around their LLMs. So what's the benefit of this API? Anyone can interact with these LLMs; you just ask a question, and it goes to the LLM, which replies back to you.
+
+
+You don't need to download the whole LLM onto your server; you can just hit these APIs and get your work done. So basically, instead of using the LLM directly, I'll be using an LLM API, alright? Plus, the cool thing about using an API is that I only pay for what I use. So if my usage is low, my payment will be low too. 
+
+In short, the two big challenges of natural language understanding and text generation have been solved by the LLM, and the computational challenges around LLM were solved by these APIs.
+
+=> SO two big challenges that were there have beenn already been solved by 2025.
+
+- 3 ==> Challenge 3 is orchestrating the entire system, meaning being able to bring together all the components here and make them work together is a huge challenge in itself. Alright, let me try to explain it. 
+
+First, I want to show you how many moving parts we have here.
+
+First off, you've got your AW A3 component, which is where you're storing your documents. Next up is the text splitter, which is basically a model that decides how to split the documents based on their content. Then there's the embedding part, which we also handle through a model, making it another component. After that, we have the database where you'll store your embeddings, so that's another component. Lastly, your LLM is also a component. So, we’ve got five components in this system.
+
+Now, if I move on to the task then we are peforming many types of tasks here we are performing the task of  loading documents, splitting text, handling embeddings, managing the database, retrieving data, and interacting with this LLM. In total, there are about five or six tasks that we need to execute through a pipeline. So, in short, this system has a lot of moving parts.
+
+"We have to execute a lot of tasks between the components, which is pretty challenging. If you decide to write all this code from scratch, it could be really, really difficult. Let me give you an example: let’s say you coded this system manually, and then you find out tomorrow that you can’t use OpenAI’s API anymore because it’s too expensive. Instead, you might be moving Google GEMINI. Then suddenly you written whole code with OPENAI to interact with, have to be removed and have to write new code with GOOGLE GEMINI to interact with. Similary instead of AWS moving to GCP, here you may want to use some other model in the embedding model.
+
+- So, there are a lot of moving parts and a ton of interaction between them, and it's pretty complex. Coding all this by hand is a super challenging task. That's where Langchain comes into play. What Langchain does is provide you with built-in functionalities, allowing you to easily plug and play all these components to interact with each other. 
+
+Not only that, agr aap ko kl ko OPENAI ka chatgpt nhi use karna GOOGLE ka GEMINI use karna koi problem nhi hia. Only change one line of code that is.
+
+Basically, it saves you from having to write a ton of boilerplate code for all these components. You don't really need to worry because all this work is handled behind the scenes by LangChain. 
+
+So, to sum up this whole conversation, if you want to build an LLM-powered application, the heavy lifting is mostly done by the LLM, but managing that LLM-based app end-to-end with all its moving parts is a really tough task, especially since the technology is still pretty new. That's where LangChain comes into play; it says you just need to focus on your idea I'll handle all the interfacing and orchestration work for you.
+---------------------------------------------------------------
+	Benefits OF LangChain
+	----------------------------
+1- Concepts of LangChain
+2- Model Agnostic Development
+3- Complete ecosystem
+4- Memory and state handling
+---------------------------------------------------------------
+	What can you build?
+	------------------------
+Conversional ChatBots
+AI Knowledge Assistants
+AI agents
+Workflow Automation
+Summarization/Research Helpers
+---------------------------------------------------------------
+	Alternatives
+	--------------
+1- LlamaIndex
+2- Haystack
